@@ -18,7 +18,15 @@
         "test": "yarn lint && ava"
     },
     "keywords": [],
-    "dependencies": {},
+    "dependencies": {
+        "@sindresorhus/is": "^1.2.0",
+        "filter-obj": "^2.0.1",
+        "hex-rgb": "^4.1.0",
+        "iohook": "~0.6.2",
+        "keycode": "^2.2.0",
+        "ow": "^0.15.0",
+        "robotjs": "~0.6.0"
+    },
     "devDependencies": {
         "ava": "^2.4.0",
         "eslint-config-richienb": "^0.2.3",
