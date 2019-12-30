@@ -1,3 +1,8 @@
+# Automatically generated files
+
+dist/
+docs/
+
 # Visual Studio Code
 
 .vscode/*

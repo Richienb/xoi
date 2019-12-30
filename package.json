@@ -5,37 +5,52 @@
     "repository": "https://github.com/Richienb/the-module.git",
     "author": "Richie Bendall <richiebendall@gmail.com>",
     "license": "MIT",
-    "main": "index.js",
+    "main": "dist/index.js",
     "files": [
-        "index.js",
-        "index.d.ts"
+        "src/**/*",
+        "dist/**/*"
     ],
     "engines": {
         "node": ">=8"
     },
     "scripts": {
+        "docs": "typedoc",
+        "build": "tsc && yarn docs",
+        "dev": "yarn tsc --watch",
         "lint": "xo",
         "test": "yarn lint && ava"
     },
     "keywords": [],
     "dependencies": {
-        "@sindresorhus/is": "^1.2.0",
-        "filter-obj": "^2.0.1",
         "hex-rgb": "^4.1.0",
         "iohook": "~0.6.2",
         "keycode": "^2.2.0",
+        "lodash": "^4.17.15",
         "ow": "^0.15.0",
         "robotjs": "~0.6.0"
     },
     "devDependencies": {
-        "ava": "^2.4.0",
+        "@types/lodash": "^4.14.149",
+        "ava": "^2.1.0",
         "eslint-config-richienb": "^0.2.3",
+        "ts-node": "^8.5.4",
+        "typedoc": "^0.15.6",
+        "typescript": "^3.7.4",
         "xo": "^0.25.3"
     },
     "resolutions": {
         "eslint": "^6.8.0"
     },
     "xo": {
-        "extends": "richienb/node"
+        "extends": "richienb/ts"
+    },
+    "ava": {
+        "compileEnhancements": false,
+        "extensions": [
+            "ts"
+        ],
+        "require": [
+            "ts-node/register"
+        ]
     }
 }

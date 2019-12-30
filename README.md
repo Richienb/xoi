@@ -21,6 +21,8 @@ theModule("unicorns");
 
 ## API
 
+For more information, see the [documentation](https://richienb.github.io/the-module).
+
 ### theModule(input, options?)
 
 #### input
