@@ -12,7 +12,6 @@ cache:
 
 node_js:
     - "lts/*"
-    - "node"
 
 after_success:
     - yarn build
