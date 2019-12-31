@@ -65,3 +65,7 @@ See the [documentation](https://richienb.github.io/xoi/globals.html#keyboard)
 ### screen
 
 See the [documentation](https://richienb.github.io/xoi/globals.html#screen)
+
+## Prerequisites
+
+See https://github.com/octalmage/robotjs#building and https://github.com/wilix-team/iohook/blob/master/docs/os-support.md
