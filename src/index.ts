@@ -11,7 +11,7 @@ import hexRgb from "hex-rgb"
 import _ from "lodash"
 
 namespace Mouse {
-    type mouseType = "left" | "right" | "middle"
+    type MouseButton = "left" | "right" | "middle"
 
     const coords = ["x", "y"]
 
@@ -87,23 +87,23 @@ namespace Mouse {
             robot.scrollMouse(x, y)
         }
 
-        public down(button: mouseType = "left"): void {
+        public down(button: MouseButton = "left"): void {
             ow(button, ow.string.is((val) => ["left", "right", "middle"].includes(val)))
             robot.mouseToggle("down", button)
         }
 
-        public up(button: mouseType = "left"): void {
+        public up(button: MouseButton = "left"): void {
             ow(button, ow.string.is((val) => ["left", "right", "middle"].includes(val)))
             robot.mouseToggle("up", button)
         }
 
-        public click(button: mouseType = "left") {
+        public click(button: MouseButton = "left") {
             this.up(button)
             this.down(button)
             this.up(button)
         }
 
-        public clickAt(x: number, y: number, button: mouseType = "left") {
+        public clickAt(x: number, y: number, button: MouseButton = "left") {
             this.move(x, y)
             this.click(button)
         }
@@ -119,7 +119,7 @@ namespace Mouse {
 }
 
 namespace Keyboard {
-    type modifier = "alt" | "command" | "control" | "shift"
+    type Modifier = "alt" | "command" | "control" | "shift"
 
     export class Keyboard extends EventEmitter {
         public shortcut = new EventEmitter()
@@ -161,21 +161,21 @@ namespace Keyboard {
             robot.setKeyboardDelay(value)
         }
 
-        public press(key: string, modifier: modifier | modifier[]): void {
+        public press(key: string, modifier: Modifier | Modifier[]): void {
             ow(key, ow.string)
             ow(modifier, ow.any(ow.undefined, ow.string.is(val => ["alt", "command", "control", "shift"].includes(val)), ow.array))
 
             robot.keyTap(key, modifier)
         }
 
-        public down(key: string, modifier: modifier | modifier[]): void {
+        public down(key: string, modifier: Modifier | Modifier[]): void {
             ow(key, ow.string)
             ow(modifier, ow.any(ow.undefined, ow.string.is(val => ["alt", "command", "control", "shift"].includes(val)), ow.array))
 
             robot.keyToggle(key, "down", modifier)
         }
 
-        public up(key: string, modifier: modifier | modifier[]): void {
+        public up(key: string, modifier: Modifier | Modifier[]): void {
             ow(key, ow.string)
             ow(modifier, ow.any(ow.undefined, ow.string.is(val => ["alt", "command", "control", "shift"].includes(val)), ow.array))
 
