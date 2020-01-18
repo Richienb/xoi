@@ -44,7 +44,7 @@
     },
     "devDependencies": {
         "@types/lodash": "^4.14.149",
-        "eslint-config-richienb": "^0.2.3",
+        "eslint-config-richienb": "^0.3.0",
         "typedoc": "^0.16.6",
         "typescript": "^3.7.4",
         "xo": "^0.25.3"
