@@ -1,7 +1,7 @@
 {
 	"name": "xoi",
 	"version": "0.0.0",
-	"description": "Control and detect the mouse, keyboard and screen.",
+	"description": "Detect and control the mouse, keyboard and screen.",
 	"repository": "https://github.com/Richienb/xoi.git",
 	"author": "Richie Bendall <richiebendall@gmail.com>",
 	"license": "MIT",

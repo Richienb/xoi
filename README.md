@@ -1,6 +1,6 @@
 # Xoi [![Travis CI Build Status](https://img.shields.io/travis/com/Richienb/xoi/master.svg?style=for-the-badge)](https://travis-ci.com/Richienb/xoi)
 
-Control and detect the mouse, keyboard and screen.
+Detect and control the mouse, keyboard and screen.
 
 [![NPM Badge](https://nodei.co/npm/xoi.png)](https://npmjs.com/package/xoi)
 
