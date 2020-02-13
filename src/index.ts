@@ -179,21 +179,21 @@ namespace Keyboard {
 			robot.setKeyboardDelay(value)
 		}
 
-		public press(key: string, modifier: Modifier | Modifier[]): void {
+		public press(key: string, modifier?: Modifier | Modifier[]): void {
 			ow(key, ow.string)
 			ow(modifier, ow.optional.any(ow.string.matches(/alt|command|control|shift/), ow.array))
 
 			robot.keyTap(key, modifier)
 		}
 
-		public down(key: string, modifier: Modifier | Modifier[]): void {
+		public down(key: string, modifier?: Modifier | Modifier[]): void {
 			ow(key, ow.string)
 			ow(modifier, ow.optional.any(ow.string.matches(/alt|command|control|shift/), ow.array))
 
 			robot.keyToggle(key, "down", modifier)
 		}
 
-		public up(key: string, modifier: Modifier | Modifier[]): void {
+		public up(key: string, modifier?: Modifier | Modifier[]): void {
 			ow(key, ow.string)
 			ow(modifier, ow.optional.any(ow.string.matches(/alt|command|control|shift/), ow.array))
 
@@ -202,7 +202,9 @@ namespace Keyboard {
 
 		public type(string: string, { interval }: {
 			interval?: number
-		}): void {
+		} = {
+				interval: 0
+			}): void {
 			ow(string, ow.string)
 			ow(interval, ow.optional.number)
 
