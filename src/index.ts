@@ -36,6 +36,7 @@ namespace Mouse {
 		}
 		public set delay(value: number) {
 			ow(value, ow.number)
+
 			this._delay = value
 			robot.setMouseDelay(value)
 		}
@@ -89,12 +90,14 @@ namespace Mouse {
 		}
 
 		public down(button: MouseButton = "left"): void {
-			ow(button, ow.string.is((val) => ["left", "right", "middle"].includes(val)))
+			ow(button, ow.string.matches(/left|right|middle/))
+
 			robot.mouseToggle("down", button)
 		}
 
 		public up(button: MouseButton = "left"): void {
-			ow(button, ow.string.is((val) => ["left", "right", "middle"].includes(val)))
+			ow(button, ow.string.matches(/left|right|middle/))
+
 			robot.mouseToggle("up", button)
 		}
 
@@ -171,27 +174,28 @@ namespace Keyboard {
 
 		public set delay(value) {
 			ow(value, ow.number)
+
 			this._delay = value
 			robot.setKeyboardDelay(value)
 		}
 
 		public press(key: string, modifier: Modifier | Modifier[]): void {
 			ow(key, ow.string)
-			ow(modifier, ow.any(ow.undefined, ow.string.is(val => ["alt", "command", "control", "shift"].includes(val)), ow.array))
+			ow(modifier, ow.optional.any(ow.string.matches(/alt|command|control|shift/), ow.array))
 
 			robot.keyTap(key, modifier)
 		}
 
 		public down(key: string, modifier: Modifier | Modifier[]): void {
 			ow(key, ow.string)
-			ow(modifier, ow.any(ow.undefined, ow.string.is(val => ["alt", "command", "control", "shift"].includes(val)), ow.array))
+			ow(modifier, ow.optional.any(ow.string.matches(/alt|command|control|shift/), ow.array))
 
 			robot.keyToggle(key, "down", modifier)
 		}
 
 		public up(key: string, modifier: Modifier | Modifier[]): void {
 			ow(key, ow.string)
-			ow(modifier, ow.any(ow.undefined, ow.string.is(val => ["alt", "command", "control", "shift"].includes(val)), ow.array))
+			ow(modifier, ow.optional.any(ow.string.matches(/alt|command|control|shift/), ow.array))
 
 			robot.keyToggle(key, "up", modifier)
 		}
@@ -200,7 +204,7 @@ namespace Keyboard {
 			interval?: number
 		}): void {
 			ow(string, ow.string)
-			ow(interval, ow.any(ow.undefined, ow.number))
+			ow(interval, ow.optional.number)
 
 			if (_.isNumber(interval)) {
 				interval = string.length * interval / 60
@@ -259,7 +263,7 @@ namespace Screen {
 	}
 }
 
-iohook.start(false)
+iohook.start()
 
 export const mouse = new Mouse.Mouse()
 export const keyboard = new Keyboard.Keyboard()
