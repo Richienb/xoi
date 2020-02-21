@@ -35,9 +35,10 @@
 		"io"
 	],
 	"dependencies": {
+		"@sindresorhus/is": "^2.1.0",
+		"charcode": "^1.0.0",
 		"hex-rgb": "^4.1.0",
 		"iohook": "~0.6.5",
-		"keycode": "^2.2.0",
 		"lodash": "^4.17.15",
 		"ow": "^0.15.0",
 		"robotjs": "~0.6.0"

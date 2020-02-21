@@ -5,10 +5,11 @@ import robot from "robotjs"
 
 import ow from "ow"
 
-import kc from "keycode"
 import { EventEmitter } from "events"
 import hexRgb from "hex-rgb"
 import _ from "lodash"
+import is from "@sindresorhus/is"
+import charcode from "charcode"
 
 namespace Mouse {
 	type MouseButton = "left" | "right" | "middle"
@@ -17,6 +18,7 @@ namespace Mouse {
 
 	const baseMouse = ["button", "clicks", ...coords]
 
+	// TODO: Replace when emittery when https://github.com/sindresorhus/emittery/issues/46 is closed.
 	export class Mouse extends EventEmitter {
 		private _delay = 10
 		private _propagate = true
@@ -138,6 +140,7 @@ namespace Mouse {
 namespace Keyboard {
 	type Modifier = "alt" | "command" | "control" | "shift"
 
+	// TODO: Replace when emittery when https://github.com/sindresorhus/emittery/issues/46 is closed.
 	export class Keyboard extends EventEmitter {
 		public shortcut = new EventEmitter()
 
@@ -145,18 +148,18 @@ namespace Keyboard {
 
 		constructor() {
 			super()
-			iohook.on("keypress", ({ keychar: code, shiftKey: shift, altKey: alt, ctrlKey: ctrl, metaKey: meta }) => this.emit("press", { key: String.fromCharCode(code), code, shift, alt, ctrl, meta }))
-			iohook.on("keydown", ({ keychar: code, shiftKey: shift, altKey: alt, ctrlKey: ctrl, metaKey: meta }) => this.emit("down", { key: String.fromCharCode(code), code, shift, alt, ctrl, meta }))
-			iohook.on("keyup", ({ keychar: code, shiftKey: shift, altKey: alt, ctrlKey: ctrl, metaKey: meta }) => this.emit("up", { key: String.fromCharCode(code), code, shift, alt, ctrl, meta }))
+			iohook.on("keypress", ({ keychar: code, shiftKey: shift, altKey: alt, ctrlKey: ctrl, metaKey: meta }) => this.emit("press", { key: charcode.from(code), code, shift, alt, ctrl, meta }))
+			iohook.on("keydown", ({ keychar: code, shiftKey: shift, altKey: alt, ctrlKey: ctrl, metaKey: meta }) => this.emit("down", { key: charcode.from(code), code, shift, alt, ctrl, meta }))
+			iohook.on("keyup", ({ keychar: code, shiftKey: shift, altKey: alt, ctrlKey: ctrl, metaKey: meta }) => this.emit("up", { key: charcode.from(code), code, shift, alt, ctrl, meta }))
 
 			const keyboardListeners = {}
 
 			this.shortcut.on("newListener", (combination: any, callback: Function) => {
-				if (_.isArray(combination)) keyboardListeners[iohook.registerShortcut(combination.map((cmb: string | number) => _.isNumber(cmb) ? cmb : kc.codes[cmb.toLowerCase()]), callback)] = { combination, callback }
+				if (is.array(combination)) keyboardListeners[iohook.registerShortcut(combination.map((cmb: string | number) => is.integer(cmb) ? cmb : charcode(cmb.toLowerCase())), callback)] = { combination, callback }
 			})
 
 			this.shortcut.on("removeListener", (combination: any, callback: Function) => {
-				if (_.isArray(combination)) _.forOwn(keyboardListeners, ({ combination: cmb, callback: cb }: { combination: any, callback: Function }, key: string) => {
+				if (is.array(combination)) _.forOwn(keyboardListeners, ({ combination: cmb, callback: cb }: { combination: any, callback: Function }, key: string) => {
 					if (
 						cmb === combination &&
 						cb === callback
@@ -208,7 +211,7 @@ namespace Keyboard {
 			ow(string, ow.string)
 			ow(interval, ow.optional.number)
 
-			if (_.isNumber(interval)) {
+			if (is.number(interval)) {
 				interval = string.length * interval / 60
 			}
 
@@ -228,6 +231,7 @@ namespace Screen {
 	}
 
 	export class Screen {
+		// TODO: Remove in next major release
 		private betterHex(hex: string): HexData {
 			const { red, green, blue } = hexRgb(hex)
 			return {

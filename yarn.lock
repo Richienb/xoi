@@ -36,6 +36,11 @@
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-0.14.0.tgz#9fb3a3cf3132328151f353de4632e01e52102bea"
   integrity sha512-9NET910DNaIPngYnLLPeg+Ogzqsi9uM4mSboU5y6p8S5DzMTVEsJZrawi+BoDNUVBa2DhJqQYUFvMDfgU062LQ==
 
+"@sindresorhus/is@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-2.1.0.tgz#6ad4ca610f696098e92954ab431ff83bea0ce13f"
+  integrity sha512-lXKXfypKo644k4Da4yXkPCrwcvn6SlUW2X2zFbuflKHNjf0w9htru01bo26uMhleMXsDmnZ12eJLdrAZa9MANg==
+
 "@szmarczak/http-timer@^1.1.2":
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@szmarczak/http-timer/-/http-timer-1.1.2.tgz#b1665e2c461a2cd92f4c1bbf50d5454de0d4b421"
@@ -530,6 +535,19 @@ chalk@^2.0.0, chalk@^2.0.1, chalk@^2.1.0, chalk@^2.4.2:
     ansi-styles "^3.2.1"
     escape-string-regexp "^1.0.5"
     supports-color "^5.3.0"
+
+char-regex@^1.0.1:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/char-regex/-/char-regex-1.0.2.tgz#d744358226217f981ed58f479b1d6bcc29545dcf"
+  integrity sha512-kWWXztvZ5SBQV+eRgKFeh8q5sLuZY2+8WUIzlxWVTg+oGwY14qylx1KbKzHd8P6ZYkAg0xyIDU9JMHhyJMZ1jw==
+
+charcode@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/charcode/-/charcode-1.0.0.tgz#38ee7f76eae903afdcf6c6a21b69033890e53d5b"
+  integrity sha512-l+ujuVDyCWIi22wIcLT0RmCpsBkuSJ+bXx2y4qZdUxsokxp740CghfI0FRyDKd7O+vJ5RmI0eoqPbr48phkqPg==
+  dependencies:
+    char-regex "^1.0.1"
+    ow "^0.16.0"
 
 chardet@^0.7.0:
   version "0.7.0"
@@ -2317,11 +2335,6 @@ jsprim@^1.2.2:
     json-schema "0.2.3"
     verror "1.10.0"
 
-keycode@^2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/keycode/-/keycode-2.2.0.tgz#3d0af56dc7b8b8e5cba8d0a97f107204eec22b04"
-  integrity sha1-PQr1bce4uOXLqNCpfxByBO7CKwQ=
-
 keyv@^3.0.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/keyv/-/keyv-3.1.0.tgz#ecc228486f69991e49e9476485a5be1e8fc5c4d9"
@@ -2973,6 +2986,13 @@ ow@^0.15.0:
   version "0.15.1"
   resolved "https://registry.yarnpkg.com/ow/-/ow-0.15.1.tgz#ad21bb4d4c46d4478b948522e36b214f6f13039d"
   integrity sha512-rwiuvCnk3Ug9T4s5oKzw3QXQSiTXlTUiQgHmZ9Ozw/37YzeX8LycosVKOtO3v5+fuARGmCgz9rVhaBJeGV+2bQ==
+  dependencies:
+    type-fest "^0.8.1"
+
+ow@^0.16.0:
+  version "0.16.0"
+  resolved "https://registry.yarnpkg.com/ow/-/ow-0.16.0.tgz#c096cfbee8fe447577099598e8f04e002f2fc391"
+  integrity sha512-pJAkOEbRT7vhJZlkyKp/rQKR4YQ3qqdek6f3MnHMs7MRBKm5RfZq6GiLnqMRbQeYTwhMFXsTFuyhDrFuPu+yFQ==
   dependencies:
     type-fest "^0.8.1"
 
