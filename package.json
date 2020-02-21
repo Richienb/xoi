@@ -40,15 +40,14 @@
 		"hex-rgb": "^4.1.0",
 		"iohook": "~0.6.5",
 		"lodash": "^4.17.15",
-		"ow": "^0.15.0",
+		"ow": "^0.16.0",
 		"robotjs": "~0.6.0"
 	},
 	"devDependencies": {
-		"@types/lodash": "^4.14.149",
 		"eslint-config-richienb": "^0.3.0",
 		"typedoc": "^0.16.6",
 		"typescript": "^3.7.4",
-		"xo": "^0.25.3"
+		"xo": "^0.26.1"
 	},
 	"resolutions": {
 		"eslint": "^6.8.0"
