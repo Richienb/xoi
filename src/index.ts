@@ -9,6 +9,7 @@ import { EventEmitter } from "events"
 import _ from "lodash"
 import is from "@sindresorhus/is"
 import charcode from "charcode"
+import keycode from "keycode"
 
 namespace Mouse {
 	type MouseButton = "left" | "right" | "middle"
@@ -147,14 +148,14 @@ namespace Keyboard {
 
 		constructor() {
 			super()
-			iohook.on("keypress", ({ keychar: code, shiftKey: shift, altKey: alt, ctrlKey: ctrl, metaKey: meta }) => this.emit("press", { key: charcode.from(code), code, shift, alt, ctrl, meta }))
-			iohook.on("keydown", ({ keycode: code, shiftKey: shift, altKey: alt, ctrlKey: ctrl, metaKey: meta }) => this.emit("down", { code, shift, alt, ctrl, meta }))
-			iohook.on("keyup", ({ keycode: code, shiftKey: shift, altKey: alt, ctrlKey: ctrl, metaKey: meta }) => this.emit("up", { code, shift, alt, ctrl, meta }))
+			iohook.on("keypress", ({ keychar: code, rawcode, shiftKey: shift, altKey: alt, ctrlKey: ctrl, metaKey: meta }) => this.emit("press", { key: charcode.from(rawcode), code, shift, alt, ctrl, meta }))
+			iohook.on("keydown", ({ keychar: code, shiftKey: shift, altKey: alt, ctrlKey: ctrl, metaKey: meta }) => this.emit("down", { key: keycode(code), code, shift, alt, ctrl, meta }))
+			iohook.on("keyup", ({ keychar: code, shiftKey: shift, altKey: alt, ctrlKey: ctrl, metaKey: meta }) => this.emit("up", { key: keycode(code), code, shift, alt, ctrl, meta }))
 
 			const keyboardListeners = {}
 
 			this.shortcut.on("newListener", (combination: any, callback: Function) => {
-				if (is.array(combination)) keyboardListeners[iohook.registerShortcut(combination.map((cmb: string | number) => is.integer(cmb) ? cmb : charcode(cmb.toLowerCase())), callback)] = { combination, callback }
+				if (is.array(combination)) keyboardListeners[iohook.registerShortcut(combination.map((cmb: string | number) => is.integer(cmb) ? cmb : kc.codes[cmb.toLowerCase()]), callback)] = { combination, callback }
 			})
 
 			this.shortcut.on("removeListener", (combination: any, callback: Function) => {
