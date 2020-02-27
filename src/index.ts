@@ -148,8 +148,8 @@ namespace Keyboard {
 		constructor() {
 			super()
 			iohook.on("keypress", ({ keychar: code, shiftKey: shift, altKey: alt, ctrlKey: ctrl, metaKey: meta }) => this.emit("press", { key: charcode.from(code), code, shift, alt, ctrl, meta }))
-			iohook.on("keydown", ({ keychar: code, shiftKey: shift, altKey: alt, ctrlKey: ctrl, metaKey: meta }) => this.emit("down", { code, shift, alt, ctrl, meta }))
-			iohook.on("keyup", ({ keychar: code, shiftKey: shift, altKey: alt, ctrlKey: ctrl, metaKey: meta }) => this.emit("up", { code, shift, alt, ctrl, meta }))
+			iohook.on("keydown", ({ keycode: code, shiftKey: shift, altKey: alt, ctrlKey: ctrl, metaKey: meta }) => this.emit("down", { code, shift, alt, ctrl, meta }))
+			iohook.on("keyup", ({ keycode: code, shiftKey: shift, altKey: alt, ctrlKey: ctrl, metaKey: meta }) => this.emit("up", { code, shift, alt, ctrl, meta }))
 
 			const keyboardListeners = {}
 

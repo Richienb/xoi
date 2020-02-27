@@ -460,6 +460,11 @@ buffer-fill@^1.0.0:
   resolved "https://registry.yarnpkg.com/buffer-fill/-/buffer-fill-1.0.0.tgz#f8f78b76789888ef39f205cd637f68e702122b2c"
   integrity sha1-+PeLdniYiO858gXNY39o5wISKyw=
 
+buffer-type@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/buffer-type/-/buffer-type-1.0.0.tgz#0ed6f61f9ca8b4f5d55c24a9d835228176d7602b"
+  integrity sha512-N6bvq1lldG40grSAsoWnmi/SfxuwUwS2lfEqsjMXboeGdb88CuIKHQN1Z72l05CUiwwAaHWXF0oTYLdpWugUIA==
+
 cache-base@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/cache-base/-/cache-base-1.0.1.tgz#0a7f46416831c8b662ee36fe4e7c59d76f666ab2"
