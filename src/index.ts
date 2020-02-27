@@ -6,7 +6,6 @@ import robot from "robotjs"
 import ow from "ow"
 
 import { EventEmitter } from "events"
-import hexRgb from "hex-rgb"
 import _ from "lodash"
 import is from "@sindresorhus/is"
 import charcode from "charcode"
@@ -149,8 +148,8 @@ namespace Keyboard {
 		constructor() {
 			super()
 			iohook.on("keypress", ({ keychar: code, shiftKey: shift, altKey: alt, ctrlKey: ctrl, metaKey: meta }) => this.emit("press", { key: charcode.from(code), code, shift, alt, ctrl, meta }))
-			iohook.on("keydown", ({ keychar: code, shiftKey: shift, altKey: alt, ctrlKey: ctrl, metaKey: meta }) => this.emit("down", { key: charcode.from(code), code, shift, alt, ctrl, meta }))
-			iohook.on("keyup", ({ keychar: code, shiftKey: shift, altKey: alt, ctrlKey: ctrl, metaKey: meta }) => this.emit("up", { key: charcode.from(code), code, shift, alt, ctrl, meta }))
+			iohook.on("keydown", ({ keychar: code, shiftKey: shift, altKey: alt, ctrlKey: ctrl, metaKey: meta }) => this.emit("down", { code, shift, alt, ctrl, meta }))
+			iohook.on("keyup", ({ keychar: code, shiftKey: shift, altKey: alt, ctrlKey: ctrl, metaKey: meta }) => this.emit("up", { code, shift, alt, ctrl, meta }))
 
 			const keyboardListeners = {}
 
@@ -231,23 +230,11 @@ namespace Screen {
 	}
 
 	export class Screen {
-		// TODO: Remove in next major release
-		private betterHex(hex: string): HexData {
-			const { red, green, blue } = hexRgb(hex)
-			return {
-				red,
-				green,
-				blue,
-				rgb: `rgb(${red}, ${green}, ${blue})`,
-				hex: `#${hex}`
-			}
-		}
-
-		public pixelAt(x: number, y: number): HexData {
+		public pixelAt(x: number, y: number): string {
 			ow(x, ow.number)
 			ow(y, ow.number)
 
-			return this.betterHex(robot.getPixelColor(x, y))
+			return robot.getPixelColor(x, y)
 		}
 
 		public get width(): number {
