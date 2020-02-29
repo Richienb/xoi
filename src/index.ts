@@ -28,7 +28,7 @@ namespace Mouse {
 			iohook.on("mousedown", (data: object) => this.emit("down", _.pick(data, baseMouse)))
 			iohook.on("mousemove", (data: object) => this.emit("move", _.pick(data, baseMouse)))
 			iohook.on("mouseclick", (data: object) => this.emit("click", _.pick(data, baseMouse)))
-			iohook.on("mousewheel", (data: object) => this.emit("wheel", _.pick(data, ["amount", "clicks", "direction", "rotation", ...coords])
+			iohook.on("mousewheel", (data: object) => this.emit("wheel", _.pick(data, ["amount", "clicks", "direction", "rotation", ...coords]),
 			))
 			iohook.on("mousedrag", (data: object) => this.emit("wheel", _.pick(data, baseMouse)))
 		}
@@ -36,6 +36,7 @@ namespace Mouse {
 		public get delay(): number {
 			return this._delay
 		}
+
 		public set delay(value: number) {
 			ow(value, ow.number)
 
@@ -103,13 +104,13 @@ namespace Mouse {
 			robot.mouseToggle("up", button)
 		}
 
-		public click(button: MouseButton = "left") {
+		public click(button: MouseButton = "left"): void {
 			this.up(button)
 			this.down(button)
 			this.up(button)
 		}
 
-		public clickAt(x: number, y: number, button: MouseButton = "left") {
+		public clickAt(x: number, y: number, button: MouseButton = "left"): void {
 			this.move(x, y)
 			this.click(button)
 		}
@@ -154,20 +155,22 @@ namespace Keyboard {
 
 			const keyboardListeners = {}
 
-			this.shortcut.on("newListener", (combination: any, callback: Function) => {
-				if (is.array(combination)) keyboardListeners[iohook.registerShortcut(combination.map((cmb: string | number) => is.integer(cmb) ? cmb : kc.codes[cmb.toLowerCase()]), callback)] = { combination, callback }
+			this.shortcut.on("newListener", (combination: any, callback: () => any) => {
+				if (is.array(combination)) keyboardListeners[iohook.registerShortcut(combination.map((cmb: string | number) => is.integer(cmb) ? cmb : kc.codes[cmb.toLowerCase()]), () => callback())] = { combination, callback }
 			})
 
-			this.shortcut.on("removeListener", (combination: any, callback: Function) => {
-				if (is.array(combination)) _.forOwn(keyboardListeners, ({ combination: cmb, callback: cb }: { combination: any, callback: Function }, key: string) => {
-					if (
-						cmb === combination &&
-						cb === callback
-					) {
-						iohook.unregisterShortcut(Number(key))
-						return false
-					}
-				})
+			this.shortcut.on("removeListener", (combination: any, callback: () => any) => {
+				if (is.array(combination)) {
+					_.forOwn(keyboardListeners, ({ combination: cmb, callback: cb }: { combination: any, callback: () => any }, key: string) => {
+						if (
+							cmb === combination &&
+							cb === callback
+						) {
+							iohook.unregisterShortcut(Number(key))
+							return false
+						}
+					})
+				}
 			})
 		}
 
@@ -206,8 +209,8 @@ namespace Keyboard {
 		public type(string: string, { interval }: {
 			interval?: number
 		} = {
-				interval: 0
-			}): void {
+			interval: 0,
+		}): void {
 			ow(string, ow.string)
 			ow(interval, ow.optional.number)
 
@@ -246,7 +249,7 @@ namespace Screen {
 			return robot.getScreenSize().height
 		}
 
-		public capture(x = 0, y = 0, width: number = screen.width, height: number = screen.height): robot.Bitmap {
+		public capture(x = 0, y = 0, width: number = this.width, height: number = this.height): robot.Bitmap {
 			ow(x, ow.number)
 			ow(y, ow.number)
 			ow(width, ow.number)

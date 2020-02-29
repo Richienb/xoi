@@ -40,20 +40,42 @@
 		"iohook": "~0.6.5",
 		"keycode": "^2.2.0",
 		"lodash": "^4.17.15",
-		"ow": "^0.16.0",
+		"ow": "^0.17.0",
 		"robotjs": "~0.6.0"
 	},
 	"devDependencies": {
 		"@types/lodash": "^4.14.149",
 		"eslint-config-richienb": "^0.3.0",
-		"typedoc": "^0.16.6",
-		"typescript": "^3.7.4",
-		"xo": "^0.26.1"
+		"typedoc": "^0.16.11",
+		"typescript": "^3.8.3",
+		"xo": "^0.27.2"
 	},
 	"resolutions": {
 		"eslint": "^6.8.0"
 	},
 	"xo": {
-		"extends": "richienb/ts"
+		"extends": "richienb/ts",
+		"rules": {
+			"@typescript-eslint/semi": [
+				"error",
+				"never"
+			],
+			"@typescript-eslint/member-delimiter-style": [
+				"error",
+				{
+					"singleline": {
+						"delimiter": "comma"
+					},
+					"multiline": {
+						"delimiter": "none"
+					}
+				}
+			],
+			"@typescript-eslint/quotes": [
+				"error",
+				"double"
+			],
+			"@typescript-eslint/no-namespace": 0
+		}
 	}
 }
