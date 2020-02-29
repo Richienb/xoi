@@ -13,6 +13,7 @@ import keycode from "keycode"
 
 // TODO: Blocked by https://github.com/wilix-team/iohook/pull/225
 // TODO: Blocked by https://github.com/sindresorhus/emittery/pull/49
+// TODO: Move rules to eslint-config-richienb
 
 namespace Mouse {
 	type MouseButton = "left" | "right" | "middle"
