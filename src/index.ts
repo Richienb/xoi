@@ -11,6 +11,9 @@ import is from "@sindresorhus/is"
 import charcode from "charcode"
 import keycode from "keycode"
 
+// TODO: Blocked by https://github.com/wilix-team/iohook/pull/225
+// TODO: Blocked by https://github.com/sindresorhus/emittery/pull/49
+
 namespace Mouse {
 	type MouseButton = "left" | "right" | "middle"
 
@@ -209,8 +212,8 @@ namespace Keyboard {
 		public type(string: string, { interval }: {
 			interval?: number
 		} = {
-			interval: 0,
-		}): void {
+				interval: 0,
+			}): void {
 			ow(string, ow.string)
 			ow(interval, ow.optional.number)
 
@@ -218,7 +221,7 @@ namespace Keyboard {
 				interval = string.length * interval / 60
 			}
 
-			if (interval) robot.typeStringDelayed(string, interval)
+			if (interval > 0) robot.typeStringDelayed(string, interval)
 			else robot.typeString(string)
 		}
 	}
