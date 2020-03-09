@@ -36,14 +36,13 @@
 	],
 	"dependencies": {
 		"@sindresorhus/is": "^2.1.0",
+		"emittery": "^0.6.0",
 		"iohook": "~0.6.5",
 		"keycode": "^2.2.0",
-		"lodash": "^4.17.15",
 		"ow": "^0.17.0",
 		"robotjs": "~0.6.0"
 	},
 	"devDependencies": {
-		"@types/lodash": "^4.14.149",
 		"eslint-config-richienb": "^0.3.0",
 		"typedoc": "^0.16.11",
 		"typescript": "^3.8.3",

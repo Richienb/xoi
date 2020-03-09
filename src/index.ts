@@ -5,35 +5,33 @@ import robot from "robotjs"
 
 import ow from "ow"
 
-import { EventEmitter } from "events"
-import _ from "lodash"
+import Emittery from "emittery"
 import is from "@sindresorhus/is"
 import keycode from "keycode"
 
 // TODO: Blocked by https://github.com/wilix-team/iohook/pull/225
-// TODO: Blocked by https://github.com/sindresorhus/emittery/pull/49
 // TODO: Move rules to eslint-config-richienb
 
 namespace Mouse {
 	type MouseButton = "left" | "right" | "middle"
 
-	const coords = ["x", "y"]
-
-	const baseMouse = ["button", "clicks", ...coords]
-
-	// TODO: Replace when emittery when https://github.com/sindresorhus/emittery/issues/46 is closed.
-	export class Mouse extends EventEmitter {
+	export class Mouse extends Emittery.Typed<{
+		down: { button: number, clicks: number, x: number, y: number }
+		move: { button: number, clicks: number, x: number, y: number }
+		click: { button: number, clicks: number, x: number, y: number }
+		wheel: { amount: number, clicks: number, direction: number, rotation: number, x: number, y: number }
+		drag: { button: number, clicks: number, x: number, y: number }
+	}> {
 		private _delay = 10
 		private _propagate = true
 
 		constructor() {
 			super()
-			iohook.on("mousedown", (data: object) => this.emit("down", _.pick(data, baseMouse)))
-			iohook.on("mousemove", (data: object) => this.emit("move", _.pick(data, baseMouse)))
-			iohook.on("mouseclick", (data: object) => this.emit("click", _.pick(data, baseMouse)))
-			iohook.on("mousewheel", (data: object) => this.emit("wheel", _.pick(data, ["amount", "clicks", "direction", "rotation", ...coords]),
-			))
-			iohook.on("mousedrag", (data: object) => this.emit("wheel", _.pick(data, baseMouse)))
+			iohook.on("mousedown", ({ button, clicks, x, y }) => this.emit("down", { button, clicks, x, y }))
+			iohook.on("mousemove", ({ button, clicks, x, y }) => this.emit("move", { button, clicks, x, y }))
+			iohook.on("mouseclick", ({ button, clicks, x, y }) => this.emit("click", { button, clicks, x, y }))
+			iohook.on("mousewheel", ({ amount, clicks, direction, rotation, x, y }) => this.emit("wheel", { amount, clicks, direction, rotation, x, y }))
+			iohook.on("mousedrag", ({ button, clicks, x, y }) => this.emit("drag", { button, clicks, x, y }))
 		}
 
 		public get delay(): number {
@@ -144,11 +142,16 @@ namespace Mouse {
 namespace Keyboard {
 	type Modifier = "alt" | "command" | "control" | "shift"
 
-	// TODO: Replace when emittery when https://github.com/sindresorhus/emittery/issues/46 is closed.
-	export class Keyboard extends EventEmitter {
-		public shortcut = new EventEmitter()
+	export class Keyboard extends Emittery.Typed<{
+		press: { key: string, code: number, shift: boolean, alt: boolean, ctrl: boolean, meta: boolean }
+		down: { key: string, code: number, shift: boolean, alt: boolean, ctrl: boolean, meta: boolean }
+		up: { key: string, code: number, shift: boolean, alt: boolean, ctrl: boolean, meta: boolean }
+	}> {
+		public shortcut = new Emittery()
 
 		private _delay = 10
+
+		private _keyboardListeners = new Map()
 
 		constructor() {
 			super()
@@ -156,24 +159,19 @@ namespace Keyboard {
 			iohook.on("keydown", ({ rawcode: code, shiftKey: shift, altKey: alt, ctrlKey: ctrl, metaKey: meta }) => this.emit("down", { key: keycode(code), code, shift, alt, ctrl, meta }))
 			iohook.on("keyup", ({ rawcode: code, shiftKey: shift, altKey: alt, ctrlKey: ctrl, metaKey: meta }) => this.emit("up", { key: keycode(code), code, shift, alt, ctrl, meta }))
 
-			const keyboardListeners = {}
+			this.shortcut.on(Emittery.listenerAdded, ({ listener, eventName }) => {
+				if (!is.string(eventName)) throw new Error("Keyboard combination must be specified.")
 
-			this.shortcut.on("newListener", (combination: any, callback: () => any) => {
-				if (is.array(combination)) keyboardListeners[iohook.registerShortcut(combination.map((cmb: string | number) => is.integer(cmb) ? cmb : keycode(cmb.toLowerCase())), () => callback())] = { combination, callback }
+				const combination = eventName.split("+").map((cmb: string) => is.integer(Number(cmb)) ? Number(cmb) : keycode(cmb.toLowerCase()))
+
+				this._keyboardListeners.set({ eventName, listener }, iohook.registerShortcut(combination, () => listener()))
 			})
 
-			this.shortcut.on("removeListener", (combination: any, callback: () => any) => {
-				if (is.array(combination)) {
-					_.forOwn(keyboardListeners, ({ combination: cmb, callback: cb }: { combination: any, callback: () => any }, key: string) => {
-						if (
-							cmb === combination &&
-							cb === callback
-						) {
-							iohook.unregisterShortcut(Number(key))
-							return false
-						}
-					})
-				}
+			this.shortcut.on(Emittery.listenerRemoved, ({ listener, eventName }) => {
+				if (!is.string(eventName)) throw new Error("Keyboard combination must be specified.")
+
+				iohook.unregisterShortcut(this._keyboardListeners.get({ listener, eventName }))
+				this._keyboardListeners.delete({ listener, eventName })
 			})
 		}
 
@@ -228,14 +226,6 @@ namespace Keyboard {
 }
 
 namespace Screen {
-	interface HexData {
-		red: number
-		green: number
-		blue: number
-		rgb: string
-		hex: string
-	}
-
 	export class Screen {
 		public pixelAt(x: number, y: number): string {
 			ow(x, ow.number)
