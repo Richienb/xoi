@@ -151,7 +151,7 @@ namespace Keyboard {
 
 		private _delay = 10
 
-		private _keyboardListeners = new Map()
+		private readonly _keyboardListeners = new Map()
 
 		constructor() {
 			super()
@@ -210,8 +210,8 @@ namespace Keyboard {
 		public type(string: string, { interval }: {
 			interval?: number
 		} = {
-				interval: 0,
-			}): void {
+			interval: 0,
+		}): void {
 			ow(string, ow.string)
 			ow(interval, ow.optional.number)
 
