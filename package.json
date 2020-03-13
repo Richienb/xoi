@@ -41,7 +41,7 @@
 		"iohook": "~0.6.5",
 		"keycode": "^2.2.0",
 		"lodash": "^4.17.15",
-		"ow": "^0.16.0",
+		"ow": "^0.17.0",
 		"robotjs": "~0.6.0"
 	},
 	"devDependencies": {
