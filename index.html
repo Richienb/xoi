@@ -82,22 +82,24 @@
 mouse.move(<span class="hljs-number">100</span>, <span class="hljs-number">100</span>, { <span class="hljs-attr">smooth</span>: <span class="hljs-literal">true</span> });
 
 <span class="hljs-comment">// Right-click</span>
-mouse.click(<span class="hljs-string">"right"</span>)
+mouse.click(<span class="hljs-string">"right"</span>);
 
 <span class="hljs-comment">// When mouse clicked</span>
-mouse.on(<span class="hljs-string">"click"</span>, ({ button }) =&gt;
+mouse.on(<span class="hljs-string">"click"</span>, ({ button }) =&gt; {
     <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`The <span class="hljs-subst">${button}</span> mouse button was clicked.`</span>)
-);
+});
 
 <span class="hljs-comment">// Type text</span>
 keyboard.type(<span class="hljs-string">"Hello World!"</span>);
 
 <span class="hljs-comment">// When key pressed</span>
-keyboard.on(<span class="hljs-string">"press"</span>, ({ key }) =&gt; <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`<span class="hljs-subst">${key}</span> was pressed.`</span>));
+keyboard.on(<span class="hljs-string">"press"</span>, ({ key }) =&gt; {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`<span class="hljs-subst">${key}</span> was pressed.`</span>)
+});
 
 <span class="hljs-comment">// Get hex code of pixel at x=100 y=100</span>
-<span class="hljs-keyword">const</span> { hex } = screen.pixelAt(<span class="hljs-number">100</span>, <span class="hljs-number">100</span>);
-<span class="hljs-built_in">console</span>.log(<span class="hljs-string">`The colour <span class="hljs-subst">${hex}</span> is at x=100, y=100`</span>)</code></pre>
+<span class="hljs-keyword">const</span> hex = screen.pixelAt(<span class="hljs-number">100</span>, <span class="hljs-number">100</span>);
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">`The colour #<span class="hljs-subst">${hex}</span> is at x=100, y=100`</span>);</code></pre>
 				<a href="#api" id="api" style="color: inherit; text-decoration: none;">
 					<h2>API</h2>
 				</a>
@@ -106,27 +108,10 @@ keyboard.on(<span class="hljs-string">"press"</span>, ({ key }) =&gt; <span clas
 					<h3>mouse</h3>
 				</a>
 				<p>See the <a href="https://richienb.github.io/xoi/globals.html#mouse">documentation</a></p>
-				<a href="#codemouseoncode-events" id="codemouseoncode-events" style="color: inherit; text-decoration: none;">
-					<h4><code>mouse.on</code> events</h4>
-				</a>
-				<ul>
-					<li><code>down</code></li>
-					<li><code>move</code></li>
-					<li><code>click</code></li>
-					<li><code>wheel</code></li>
-				</ul>
 				<a href="#keyboard" id="keyboard" style="color: inherit; text-decoration: none;">
 					<h3>keyboard</h3>
 				</a>
 				<p>See the <a href="https://richienb.github.io/xoi/globals.html#keyboard">documentation</a></p>
-				<a href="#codekeyboardoncode-events" id="codekeyboardoncode-events" style="color: inherit; text-decoration: none;">
-					<h4><code>keyboard.on</code> events</h4>
-				</a>
-				<ul>
-					<li><code>press</code></li>
-					<li><code>down</code></li>
-					<li><code>up</code></li>
-				</ul>
 				<a href="#screen" id="screen" style="color: inherit; text-decoration: none;">
 					<h3>screen</h3>
 				</a>
@@ -143,19 +128,25 @@ keyboard.on(<span class="hljs-string">"press"</span>, ({ key }) =&gt; <span clas
 					<li class="globals  ">
 						<a href="globals.html"><em>Globals</em></a>
 					</li>
-					<li class=" tsd-kind-module">
-						<a href="modules/keyboard.html">Keyboard</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="modules/mouse.html">Mouse</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="modules/screen.html">Screen</a>
-					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
+					<li class=" tsd-kind-class tsd-has-type-parameter">
+						<a href="classes/keyboard.html" class="tsd-kind-icon">Keyboard</a>
+					</li>
+					<li class=" tsd-kind-class tsd-has-type-parameter">
+						<a href="classes/mouse.html" class="tsd-kind-icon">Mouse</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/screen.html" class="tsd-kind-icon">Screen</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#modifier" class="tsd-kind-icon">Modifier</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#mousebutton" class="tsd-kind-icon">Mouse<wbr>Button</a>
+					</li>
 					<li class=" tsd-kind-variable">
 						<a href="globals.html#keyboard" class="tsd-kind-icon">keyboard</a>
 					</li>
@@ -175,57 +166,16 @@ keyboard.on(<span class="hljs-string">"press"</span>, ({ key }) =&gt; <span clas
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
-				<li class="tsd-kind-module"><span class="tsd-kind-icon">Module</span></li>
-				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
-				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
-				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
-				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
-				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
-				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
-				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
-				<li class="tsd-kind-enum-member"><span class="tsd-kind-icon">Enumeration member</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-enum"><span class="tsd-kind-icon">Property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-enum"><span class="tsd-kind-icon">Method</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
-				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
-				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
-				<li class="tsd-kind-index-signature tsd-parent-kind-interface"><span class="tsd-kind-icon">Index signature</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
-				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
 				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
 				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
 				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
 				<li class="tsd-kind-accessor tsd-parent-kind-class"><span class="tsd-kind-icon">Accessor</span></li>
-				<li class="tsd-kind-index-signature tsd-parent-kind-class"><span class="tsd-kind-icon">Index signature</span></li>
 			</ul>
 			<ul class="tsd-legend">
-				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
 				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
-				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited accessor</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected method</span></li>
-				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected accessor</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
-				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private accessor</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
-				<li class="tsd-kind-call-signature tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
 			</ul>
 		</div>
 	</div>
