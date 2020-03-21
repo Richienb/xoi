@@ -33,8 +33,8 @@ keyboard.type("Hello World!");
 keyboard.on("press", ({ key }) => console.log(`${key} was pressed.`));
 
 // Get hex code of pixel at x=100 y=100
-const { hex } = screen.pixelAt(100, 100);
-console.log(`The colour ${hex} is at x=100, y=100`)
+const hex = screen.pixelAt(100, 100);
+console.log(`The colour #${hex} is at x=100, y=100`)
 ```
 
 ## API
