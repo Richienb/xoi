@@ -205,8 +205,8 @@ class Keyboard extends Emittery.Typed<{
 	public type(string: string, { interval }: {
 		interval?: number
 	} = {
-			interval: 0,
-		}): void {
+		interval: 0,
+	}): void {
 		ow(string, ow.string)
 		ow(interval, ow.optional.number.greaterThanOrEqual(0))
 
