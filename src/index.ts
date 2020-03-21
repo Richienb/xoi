@@ -208,7 +208,7 @@ class Keyboard extends Emittery.Typed<{
 			interval: 0,
 		}): void {
 		ow(string, ow.string)
-		ow(interval, ow.optional.number)
+		ow(interval, ow.optional.number.greaterThanOrEqual(0))
 
 		if (is.number(interval)) {
 			interval = string.length * interval / 60
