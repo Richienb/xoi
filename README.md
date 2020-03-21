@@ -19,22 +19,24 @@ const { mouse, keyboard, screen } = require("xoi");
 mouse.move(100, 100, { smooth: true });
 
 // Right-click
-mouse.click("right")
+mouse.click("right");
 
 // When mouse clicked
-mouse.on("click", ({ button }) =>
-    console.log(`The ${button} mouse button was clicked.`)
-);
+mouse.on("click", ({ button }) => {
+	console.log(`The ${button} mouse button was clicked.`)
+});
 
 // Type text
 keyboard.type("Hello World!");
 
 // When key pressed
-keyboard.on("press", ({ key }) => console.log(`${key} was pressed.`));
+keyboard.on("press", ({ key }) => {
+	console.log(`${key} was pressed.`)
+});
 
 // Get hex code of pixel at x=100 y=100
 const hex = screen.pixelAt(100, 100);
-console.log(`The colour #${hex} is at x=100, y=100`)
+console.log(`The colour #${hex} is at x=100, y=100`);
 ```
 
 ## API
