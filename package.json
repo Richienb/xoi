@@ -43,10 +43,11 @@
 		"robotjs": "~0.6.0"
 	},
 	"devDependencies": {
+		"@richienb/tsconfig": "^0.1.1",
 		"eslint-config-richienb": "^0.3.0",
-		"typedoc": "^0.16.11",
+		"typedoc": "^0.17.1",
 		"typescript": "^3.8.3",
-		"xo": "^0.27.2"
+		"xo": "^0.28.0"
 	},
 	"resolutions": {
 		"eslint": "^6.8.0"

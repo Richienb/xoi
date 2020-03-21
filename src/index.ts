@@ -9,252 +9,244 @@ import Emittery from "emittery"
 import is from "@sindresorhus/is"
 import keycode from "keycode"
 
-// TODO: Blocked by https://github.com/wilix-team/iohook/pull/225
-// TODO: Move rules to eslint-config-richienb
+export type MouseButton = "left" | "right" | "middle"
 
-namespace Mouse {
-	type MouseButton = "left" | "right" | "middle"
+class Mouse extends Emittery.Typed<{
+	down: { button: number, clicks: number, x: number, y: number }
+	move: { button: number, clicks: number, x: number, y: number }
+	click: { button: number, clicks: number, x: number, y: number }
+	wheel: { amount: number, clicks: number, direction: number, rotation: number, x: number, y: number }
+	drag: { button: number, clicks: number, x: number, y: number }
+}> {
+	private _delay = 10
+	private _propagate = true
 
-	export class Mouse extends Emittery.Typed<{
-		down: { button: number, clicks: number, x: number, y: number }
-		move: { button: number, clicks: number, x: number, y: number }
-		click: { button: number, clicks: number, x: number, y: number }
-		wheel: { amount: number, clicks: number, direction: number, rotation: number, x: number, y: number }
-		drag: { button: number, clicks: number, x: number, y: number }
-	}> {
-		private _delay = 10
-		private _propagate = true
+	constructor() {
+		super()
+		iohook.on("mousedown", ({ button, clicks, x, y }) => this.emit("down", { button, clicks, x, y }))
+		iohook.on("mousemove", ({ button, clicks, x, y }) => this.emit("move", { button, clicks, x, y }))
+		iohook.on("mouseclick", ({ button, clicks, x, y }) => this.emit("click", { button, clicks, x, y }))
+		iohook.on("mousewheel", ({ amount, clicks, direction, rotation, x, y }) => this.emit("wheel", { amount, clicks, direction, rotation, x, y }))
+		iohook.on("mousedrag", ({ button, clicks, x, y }) => this.emit("drag", { button, clicks, x, y }))
+	}
 
-		constructor() {
-			super()
-			iohook.on("mousedown", ({ button, clicks, x, y }) => this.emit("down", { button, clicks, x, y }))
-			iohook.on("mousemove", ({ button, clicks, x, y }) => this.emit("move", { button, clicks, x, y }))
-			iohook.on("mouseclick", ({ button, clicks, x, y }) => this.emit("click", { button, clicks, x, y }))
-			iohook.on("mousewheel", ({ amount, clicks, direction, rotation, x, y }) => this.emit("wheel", { amount, clicks, direction, rotation, x, y }))
-			iohook.on("mousedrag", ({ button, clicks, x, y }) => this.emit("drag", { button, clicks, x, y }))
+	public get delay(): number {
+		return this._delay
+	}
+
+	public set delay(value: number) {
+		ow(value, ow.number)
+
+		this._delay = value
+		robot.setMouseDelay(value)
+	}
+
+	public move(x: number, y: number, { smooth = false, relative = false }: {
+		smooth?: boolean
+		relative?: boolean
+	} = {}): void {
+		ow(x, ow.number)
+		ow(y, ow.number)
+		ow(smooth, ow.boolean)
+		ow(relative, ow.boolean)
+
+		if (relative) {
+			x += this.x
+			y += this.y
 		}
 
-		public get delay(): number {
-			return this._delay
+		if (smooth) robot.moveMouseSmooth(x, y)
+		else robot.moveMouse(x, y)
+	}
+
+	public dragTo(x: number, y: number, { relative = false }: {
+		relative?: boolean
+	} = {}): void {
+		ow(x, ow.number)
+		ow(y, ow.number)
+		ow(relative, ow.boolean)
+
+		if (relative) {
+			x += this.x
+			y += this.y
 		}
 
-		public set delay(value: number) {
-			ow(value, ow.number)
+		robot.dragMouse(x, y)
+	}
 
-			this._delay = value
-			robot.setMouseDelay(value)
+	public scrollTo(x: number, y: number, { relative = false }: {
+		relative?: boolean
+	} = {}): void {
+		ow(x, ow.number)
+		ow(y, ow.number)
+		ow(relative, ow.boolean)
+
+		if (!relative) {
+			x -= this.x
+			y -= this.y
 		}
 
-		public move(x: number, y: number, { smooth = false, relative = false }: {
-			smooth?: boolean
-			relative?: boolean
-		} = {}): void {
-			ow(x, ow.number)
-			ow(y, ow.number)
-			ow(smooth, ow.boolean)
-			ow(relative, ow.boolean)
+		robot.scrollMouse(x, y)
+	}
 
-			if (relative) {
-				x += this.x
-				y += this.y
-			}
+	public down(button: MouseButton = "left"): void {
+		ow(button, ow.string.oneOf(["left", "middle", "right"]))
 
-			if (smooth) robot.moveMouseSmooth(x, y)
-			else robot.moveMouse(x, y)
-		}
+		robot.mouseToggle("down", button)
+	}
 
-		public dragTo(x: number, y: number, { relative = false }: {
-			relative?: boolean
-		} = {}): void {
-			ow(x, ow.number)
-			ow(y, ow.number)
-			ow(relative, ow.boolean)
+	public up(button: MouseButton = "left"): void {
+		ow(button, ow.string.oneOf(["left", "middle", "right"]))
 
-			if (relative) {
-				x += this.x
-				y += this.y
-			}
+		robot.mouseToggle("up", button)
+	}
 
-			robot.dragMouse(x, y)
-		}
+	public click(button: MouseButton = "left"): void {
+		this.up(button)
+		this.down(button)
+		this.up(button)
+	}
 
-		public scrollTo(x: number, y: number, { relative = false }: {
-			relative?: boolean
-		} = {}): void {
-			ow(x, ow.number)
-			ow(y, ow.number)
-			ow(relative, ow.boolean)
+	public clickAt(x: number, y: number, button: MouseButton = "left"): void {
+		this.move(x, y)
+		this.click(button)
+	}
 
-			if (!relative) {
-				x -= this.x
-				y -= this.y
-			}
+	public get x(): number {
+		return robot.getMousePos().x
+	}
 
-			robot.scrollMouse(x, y)
-		}
+	public get y(): number {
+		return robot.getMousePos().y
+	}
 
-		public down(button: MouseButton = "left"): void {
-			ow(button, ow.string.matches(/left|right|middle/))
+	get propagate(): boolean {
+		return this._propagate
+	}
 
-			robot.mouseToggle("down", button)
-		}
+	set propagate(value: boolean) {
+		ow(value, ow.boolean)
 
-		public up(button: MouseButton = "left"): void {
-			ow(button, ow.string.matches(/left|right|middle/))
+		this._propagate = value
 
-			robot.mouseToggle("up", button)
-		}
-
-		public click(button: MouseButton = "left"): void {
-			this.up(button)
-			this.down(button)
-			this.up(button)
-		}
-
-		public clickAt(x: number, y: number, button: MouseButton = "left"): void {
-			this.move(x, y)
-			this.click(button)
-		}
-
-		public get x(): number {
-			return robot.getMousePos().x
-		}
-
-		public get y(): number {
-			return robot.getMousePos().y
-		}
-
-		get propagate(): boolean {
-			return this._propagate
-		}
-
-		set propagate(value: boolean) {
-			ow(value, ow.boolean)
-
-			this._propagate = value
-
-			if (value) iohook.enableClickPropagation()
-			else iohook.disableClickPropagation()
-		}
+		if (value) iohook.enableClickPropagation()
+		else iohook.disableClickPropagation()
 	}
 }
 
-namespace Keyboard {
-	type Modifier = "alt" | "command" | "control" | "shift"
 
-	export class Keyboard extends Emittery.Typed<{
-		press: { key: string, code: number, shift: boolean, alt: boolean, ctrl: boolean, meta: boolean }
-		down: { key: string, code: number, shift: boolean, alt: boolean, ctrl: boolean, meta: boolean }
-		up: { key: string, code: number, shift: boolean, alt: boolean, ctrl: boolean, meta: boolean }
-	}> {
-		public shortcut = new Emittery()
+export type Modifier = "alt" | "command" | "control" | "shift"
 
-		private _delay = 10
+class Keyboard extends Emittery.Typed<{
+	press: { key: string, code: number, shift: boolean, alt: boolean, ctrl: boolean, meta: boolean }
+	down: { key: string, code: number, shift: boolean, alt: boolean, ctrl: boolean, meta: boolean }
+	up: { key: string, code: number, shift: boolean, alt: boolean, ctrl: boolean, meta: boolean }
+}> {
+	public shortcut = new Emittery()
 
-		private readonly _keyboardListeners = new Map()
+	private _delay = 10
 
-		constructor() {
-			super()
-			iohook.on("keypress", ({ keychar, rawcode: code, shiftKey: shift, altKey: alt, ctrlKey: ctrl, metaKey: meta }) => this.emit("press", { key: keycode(keychar), code, shift, alt, ctrl, meta }))
-			iohook.on("keydown", ({ rawcode: code, shiftKey: shift, altKey: alt, ctrlKey: ctrl, metaKey: meta }) => this.emit("down", { key: keycode(code), code, shift, alt, ctrl, meta }))
-			iohook.on("keyup", ({ rawcode: code, shiftKey: shift, altKey: alt, ctrlKey: ctrl, metaKey: meta }) => this.emit("up", { key: keycode(code), code, shift, alt, ctrl, meta }))
+	private readonly _keyboardListeners = new Map()
 
-			this.shortcut.on(Emittery.listenerAdded, ({ listener, eventName }) => {
-				if (!is.string(eventName)) throw new Error("Keyboard combination must be specified.")
+	constructor() {
+		super()
+		iohook.on("keypress", ({ keychar, rawcode: code, shiftKey: shift, altKey: alt, ctrlKey: ctrl, metaKey: meta }) => this.emit("press", { key: keycode(keychar), code, shift, alt, ctrl, meta }))
+		iohook.on("keydown", ({ rawcode: code, shiftKey: shift, altKey: alt, ctrlKey: ctrl, metaKey: meta }) => this.emit("down", { key: keycode(code), code, shift, alt, ctrl, meta }))
+		iohook.on("keyup", ({ rawcode: code, shiftKey: shift, altKey: alt, ctrlKey: ctrl, metaKey: meta }) => this.emit("up", { key: keycode(code), code, shift, alt, ctrl, meta }))
 
-				const combination = eventName.split("+").map((cmb: string) => is.integer(Number(cmb)) ? Number(cmb) : keycode(cmb.toLowerCase()))
+		this.shortcut.on(Emittery.listenerAdded, ({ listener, eventName }) => {
+			if (!is.string(eventName)) throw new Error("Keyboard combination must be specified.")
 
-				this._keyboardListeners.set({ eventName, listener }, iohook.registerShortcut(combination, () => listener()))
-			})
+			const combination = eventName.split("+").map((cmb: string) => is.integer(Number(cmb)) ? Number(cmb) : keycode(cmb.toLowerCase()))
 
-			this.shortcut.on(Emittery.listenerRemoved, ({ listener, eventName }) => {
-				if (!is.string(eventName)) throw new Error("Keyboard combination must be specified.")
+			this._keyboardListeners.set({ eventName, listener }, iohook.registerShortcut(combination, () => listener()))
+		})
 
-				iohook.unregisterShortcut(this._keyboardListeners.get({ listener, eventName }))
-				this._keyboardListeners.delete({ listener, eventName })
-			})
-		}
+		this.shortcut.on(Emittery.listenerRemoved, ({ listener, eventName }) => {
+			if (!is.string(eventName)) throw new Error("Keyboard combination must be specified.")
 
-		public get delay(): number {
-			return this._delay
-		}
+			iohook.unregisterShortcut(this._keyboardListeners.get({ listener, eventName }))
+			this._keyboardListeners.delete({ listener, eventName })
+		})
+	}
 
-		public set delay(value) {
-			ow(value, ow.number)
+	public get delay(): number {
+		return this._delay
+	}
 
-			this._delay = value
-			robot.setKeyboardDelay(value)
-		}
+	public set delay(value) {
+		ow(value, ow.number)
 
-		public press(key: string, modifier?: Modifier | Modifier[]): void {
-			ow(key, ow.string)
-			ow(modifier, ow.optional.any(ow.string.matches(/alt|command|control|shift/), ow.array))
+		this._delay = value
+		robot.setKeyboardDelay(value)
+	}
 
-			robot.keyTap(key, modifier)
-		}
+	public press(key: string, modifier?: Modifier | Modifier[]): void {
+		ow(key, ow.string)
+		ow(modifier, ow.optional.any(ow.string.oneOf(["alt", "command", "control", "shift"]), ow.array.includesAny(["alt", "command", "control", "shift"])))
 
-		public down(key: string, modifier?: Modifier | Modifier[]): void {
-			ow(key, ow.string)
-			ow(modifier, ow.optional.any(ow.string.matches(/alt|command|control|shift/), ow.array))
+		robot.keyTap(key, modifier)
+	}
 
-			robot.keyToggle(key, "down", modifier)
-		}
+	public down(key: string, modifier?: Modifier | Modifier[]): void {
+		ow(key, ow.string)
+		ow(modifier, ow.optional.any(ow.string.oneOf(["alt", "command", "control", "shift"]), ow.array.includesAny(["alt", "command", "control", "shift"])))
 
-		public up(key: string, modifier?: Modifier | Modifier[]): void {
-			ow(key, ow.string)
-			ow(modifier, ow.optional.any(ow.string.matches(/alt|command|control|shift/), ow.array))
+		robot.keyToggle(key, "down", modifier)
+	}
 
-			robot.keyToggle(key, "up", modifier)
-		}
+	public up(key: string, modifier?: Modifier | Modifier[]): void {
+		ow(key, ow.string)
+		ow(modifier, ow.optional.any(ow.string.oneOf(["alt", "command", "control", "shift"]), ow.array.includesAny(["alt", "command", "control", "shift"])))
 
-		public type(string: string, { interval }: {
-			interval?: number
-		} = {
+		robot.keyToggle(key, "up", modifier)
+	}
+
+	public type(string: string, { interval }: {
+		interval?: number
+	} = {
 			interval: 0,
 		}): void {
-			ow(string, ow.string)
-			ow(interval, ow.optional.number)
+		ow(string, ow.string)
+		ow(interval, ow.optional.number)
 
-			if (is.number(interval)) {
-				interval = string.length * interval / 60
-			}
-
-			if (interval > 0) robot.typeStringDelayed(string, interval)
-			else robot.typeString(string)
+		if (is.number(interval)) {
+			interval = string.length * interval / 60
 		}
+
+		if (interval > 0) robot.typeStringDelayed(string, interval)
+		else robot.typeString(string)
 	}
 }
 
-namespace Screen {
-	export class Screen {
-		public pixelAt(x: number, y: number): string {
-			ow(x, ow.number)
-			ow(y, ow.number)
+class Screen {
+	public pixelAt(x: number, y: number): string {
+		ow(x, ow.number)
+		ow(y, ow.number)
 
-			return robot.getPixelColor(x, y)
-		}
+		return robot.getPixelColor(x, y)
+	}
 
-		public get width(): number {
-			return robot.getScreenSize().width
-		}
+	public get width(): number {
+		return robot.getScreenSize().width
+	}
 
-		public get height(): number {
-			return robot.getScreenSize().height
-		}
+	public get height(): number {
+		return robot.getScreenSize().height
+	}
 
-		public capture(x = 0, y = 0, width: number = this.width, height: number = this.height): robot.Bitmap {
-			ow(x, ow.number)
-			ow(y, ow.number)
-			ow(width, ow.number)
-			ow(height, ow.number)
+	public capture(x = 0, y = 0, width: number = this.width, height: number = this.height): robot.Bitmap {
+		ow(x, ow.number)
+		ow(y, ow.number)
+		ow(width, ow.number)
+		ow(height, ow.number)
 
-			return robot.screen.capture(x, y, width, height)
-		}
+		return robot.screen.capture(x, y, width, height)
 	}
 }
 
 iohook.start()
 
-export const mouse = new Mouse.Mouse()
-export const keyboard = new Keyboard.Keyboard()
-export const screen = new Screen.Screen()
+export const mouse = new Mouse()
+export const keyboard = new Keyboard()
+export const screen = new Screen()
