@@ -45,22 +45,9 @@ For more information, see the [documentation](https://richienb.github.io/xoi).
 
 See the [documentation](https://richienb.github.io/xoi/globals.html#mouse)
 
-#### `mouse.on` events
-
--   `down`
--   `move`
--   `click`
--   `wheel`
-
 ### keyboard
 
 See the [documentation](https://richienb.github.io/xoi/globals.html#keyboard)
-
-#### `keyboard.on` events
-
--   `press`
--   `down`
--   `up`
 
 ### screen
 
