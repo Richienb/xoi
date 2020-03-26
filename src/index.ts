@@ -55,8 +55,11 @@ class Mouse extends Emittery.Typed<{
 			y += this.y
 		}
 
-		if (smooth) robot.moveMouseSmooth(x, y)
-		else robot.moveMouse(x, y)
+		if (smooth) {
+			robot.moveMouseSmooth(x, y)
+		} else {
+			robot.moveMouse(x, y)
+		}
 	}
 
 	public dragTo(x: number, y: number, { relative = false }: {
@@ -129,11 +132,13 @@ class Mouse extends Emittery.Typed<{
 
 		this._propagate = value
 
-		if (value) iohook.enableClickPropagation()
-		else iohook.disableClickPropagation()
+		if (value) {
+			iohook.enableClickPropagation()
+		} else {
+			iohook.disableClickPropagation()
+		}
 	}
 }
-
 
 export type Modifier = "alt" | "command" | "control" | "shift"
 
@@ -155,7 +160,9 @@ class Keyboard extends Emittery.Typed<{
 		iohook.on("keyup", ({ rawcode: code, shiftKey: shift, altKey: alt, ctrlKey: ctrl, metaKey: meta }) => this.emit("up", { key: keycode(code), code, shift, alt, ctrl, meta }))
 
 		this.shortcut.on(Emittery.listenerAdded, ({ listener, eventName }) => {
-			if (!is.string(eventName)) throw new Error("Keyboard combination must be specified.")
+			if (!is.string(eventName)) {
+				throw new Error("Keyboard combination must be specified.")
+			}
 
 			const combination = eventName.split("+").map((cmb: string) => is.integer(Number(cmb)) ? Number(cmb) : keycode(cmb.toLowerCase()))
 
@@ -163,7 +170,9 @@ class Keyboard extends Emittery.Typed<{
 		})
 
 		this.shortcut.on(Emittery.listenerRemoved, ({ listener, eventName }) => {
-			if (!is.string(eventName)) throw new Error("Keyboard combination must be specified.")
+			if (!is.string(eventName)) {
+				throw new Error("Keyboard combination must be specified.")
+			}
 
 			iohook.unregisterShortcut(this._keyboardListeners.get({ listener, eventName }))
 			this._keyboardListeners.delete({ listener, eventName })
@@ -205,8 +214,8 @@ class Keyboard extends Emittery.Typed<{
 	public type(string: string, { interval }: {
 		interval?: number
 	} = {
-			interval: 0,
-		}): void {
+		interval: 0
+	}): void {
 		ow(string, ow.string)
 		ow(interval, ow.optional.number)
 
@@ -214,8 +223,11 @@ class Keyboard extends Emittery.Typed<{
 			interval = string.length * interval / 60
 		}
 
-		if (interval > 0) robot.typeStringDelayed(string, interval)
-		else robot.typeString(string)
+		if (interval > 0) {
+			robot.typeStringDelayed(string, interval)
+		} else {
+			robot.typeString(string)
+		}
 	}
 }
 
