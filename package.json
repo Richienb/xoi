@@ -44,38 +44,15 @@
 	},
 	"devDependencies": {
 		"@richienb/tsconfig": "^0.1.1",
-		"eslint-config-richienb": "^0.3.0",
+		"eslint-config-richienb": "^0.4.2",
 		"typedoc": "^0.17.1",
 		"typescript": "^3.8.3",
-		"xo": "^0.27.2"
+		"xo": "^0.28.1"
 	},
 	"resolutions": {
 		"eslint": "^6.8.0"
 	},
 	"xo": {
-		"extends": "richienb/ts",
-		"rules": {
-			"@typescript-eslint/semi": [
-				"error",
-				"never"
-			],
-			"@typescript-eslint/member-delimiter-style": [
-				"error",
-				{
-					"singleline": {
-						"delimiter": "comma"
-					},
-					"multiline": {
-						"delimiter": "none"
-					}
-				}
-			],
-			"@typescript-eslint/quotes": [
-				"error",
-				"double"
-			],
-			"@typescript-eslint/no-namespace": 0,
-			"@typescript-eslint/promise-function-async": 0
-		}
+		"extends": "richienb"
 	}
 }
