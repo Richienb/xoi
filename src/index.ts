@@ -194,7 +194,7 @@ class Keyboard extends Emittery.Typed<{
 		ow(key, ow.string)
 		ow(modifier, ow.optional.any(ow.string.oneOf(["alt", "command", "control", "shift"]), ow.array.includesAny(["alt", "command", "control", "shift"])))
 
-		robot.keyTap(key, modifier)
+		robot.keyTap(key, modifier ?? [])
 	}
 
 	public down(key: string, modifier?: Modifier | Modifier[]): void {
