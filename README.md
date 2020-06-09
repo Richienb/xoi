@@ -41,8 +41,6 @@ console.log(`The colour #${hex} is at x=100, y=100`);
 
 ## API
 
-For more information, see the [documentation](https://richienb.github.io/xoi).
-
 ### mouse.x
 
 Type: `number`
