@@ -45,7 +45,6 @@
 	"devDependencies": {
 		"@richienb/tsconfig": "^0.1.1",
 		"eslint-config-richienb": "^0.4.2",
-		"typedoc": "^0.17.1",
 		"typescript": "^3.8.3",
 		"xo": "^0.28.1"
 	},

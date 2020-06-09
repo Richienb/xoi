@@ -9,6 +9,7 @@ import Emittery from "emittery"
 import is from "@sindresorhus/is"
 import keycode from "keycode"
 
+// TODO: Move types to namespace in next major release.
 export type MouseButton = "left" | "right" | "middle"
 
 class Mouse extends Emittery.Typed<{
@@ -26,6 +27,7 @@ class Mouse extends Emittery.Typed<{
 		iohook.on("mousedown", ({ button, clicks, x, y }) => this.emit("down", { button, clicks, x, y }))
 		iohook.on("mousemove", ({ button, clicks, x, y }) => this.emit("move", { button, clicks, x, y }))
 		iohook.on("mouseclick", ({ button, clicks, x, y }) => this.emit("click", { button, clicks, x, y }))
+		// TODO: Format `rotation` as "up" or "down" in next major release and maybe remove `direction` and `clicks`.
 		iohook.on("mousewheel", ({ amount, clicks, direction, rotation, x, y }) => this.emit("wheel", { amount, clicks, direction, rotation, x, y }))
 		iohook.on("mousedrag", ({ button, clicks, x, y }) => this.emit("drag", { button, clicks, x, y }))
 	}
@@ -41,6 +43,14 @@ class Mouse extends Emittery.Typed<{
 		robot.setMouseDelay(value)
 	}
 
+	/**
+	Move the mouse to a specific location.
+
+	@param x The x coordinate of the target location.
+	@param y The y coordinate of the target location.
+	@param smooth Smoothly move the mouse.
+	@param relative Treat `x` and `y` as relative values from the current location.
+	*/
 	public move(x: number, y: number, { smooth = false, relative = false }: {
 		smooth?: boolean
 		relative?: boolean
@@ -62,6 +72,13 @@ class Mouse extends Emittery.Typed<{
 		}
 	}
 
+	/**
+	Drag the mouse from it's current location to the specified location.
+
+	@param x The x coordinate of the target location.
+	@param y The y coordinate of the target location.
+	@param relative Treat `x` and `y` as relative values from the current location.
+	*/
 	public dragTo(x: number, y: number, { relative = false }: {
 		relative?: boolean
 	} = {}): void {
@@ -77,6 +94,13 @@ class Mouse extends Emittery.Typed<{
 		robot.dragMouse(x, y)
 	}
 
+	/**
+	Scroll the mouse to the specified location.
+
+	@param x The x coordinate of the target location.
+	@param y The y coordinate of the target location.
+	@param relative Treat `x` and `y` as relative values from the current location.
+	*/
 	public scrollTo(x: number, y: number, { relative = false }: {
 		relative?: boolean
 	} = {}): void {
@@ -92,24 +116,46 @@ class Mouse extends Emittery.Typed<{
 		robot.scrollMouse(x, y)
 	}
 
+	/**
+	Press down a mouse button.
+
+	@param button The mouse button to press.
+	*/
 	public down(button: MouseButton = "left"): void {
 		ow(button, ow.string.oneOf(["left", "middle", "right"]))
 
 		robot.mouseToggle("down", button)
 	}
 
+	/**
+	Release a mouse button that is pressed down.
+
+	@param button The mouse button to press.
+	*/
 	public up(button: MouseButton = "left"): void {
 		ow(button, ow.string.oneOf(["left", "middle", "right"]))
 
 		robot.mouseToggle("up", button)
 	}
 
+	/**
+	Press and release a mouse button.
+
+	@param button The mouse button to press.
+	*/
 	public click(button: MouseButton = "left"): void {
 		this.up(button)
 		this.down(button)
 		this.up(button)
 	}
 
+	/**
+	Click at a specific location.
+
+	@param x The x coordinate of the target location.
+	@param y The y coordinate of the target location.
+	@param button The mouse button to press.
+	*/
 	public clickAt(x: number, y: number, button: MouseButton = "left"): void {
 		this.move(x, y)
 		this.click(button)
@@ -140,6 +186,7 @@ class Mouse extends Emittery.Typed<{
 	}
 }
 
+// TODO: Make `command` match `meta` in keyboard events.
 export type Modifier = "alt" | "command" | "control" | "shift"
 
 class Keyboard extends Emittery.Typed<{
@@ -190,13 +237,25 @@ class Keyboard extends Emittery.Typed<{
 		robot.setKeyboardDelay(value)
 	}
 
-	public press(key: string, modifier?: Modifier | Modifier[]): void {
+	/**
+	Press a key.
+
+	@param key The key to press.
+	@param modifier The key modifiers to use.
+	*/
+	public press(key: string, modifier: Modifier | Modifier[] = []): void {
 		ow(key, ow.string)
 		ow(modifier, ow.optional.any(ow.string.oneOf(["alt", "command", "control", "shift"]), ow.array.includesAny(["alt", "command", "control", "shift"])))
 
-		robot.keyTap(key, modifier ?? [])
+		robot.keyTap(key, modifier)
 	}
 
+	/**
+	Hold down a key.
+
+	@param key The key to hold down.
+	@param modifier The key modifiers to use.
+	*/
 	public down(key: string, modifier?: Modifier | Modifier[]): void {
 		ow(key, ow.string)
 		ow(modifier, ow.optional.any(ow.string.oneOf(["alt", "command", "control", "shift"]), ow.array.includesAny(["alt", "command", "control", "shift"])))
@@ -204,6 +263,12 @@ class Keyboard extends Emittery.Typed<{
 		robot.keyToggle(key, "down", modifier)
 	}
 
+	/**
+	Release a key that is held down.
+
+	@param key The key that is held down.
+	@param modifier The key modifiers to use.
+	*/
 	public up(key: string, modifier?: Modifier | Modifier[]): void {
 		ow(key, ow.string)
 		ow(modifier, ow.optional.any(ow.string.oneOf(["alt", "command", "control", "shift"]), ow.array.includesAny(["alt", "command", "control", "shift"])))
@@ -211,33 +276,31 @@ class Keyboard extends Emittery.Typed<{
 		robot.keyToggle(key, "up", modifier)
 	}
 
-	public type(string: string, { interval }: {
+	/**
+	Type some text.
+
+	@param input The text to type.
+	@param interval The interval in milliseconds to wait between presses.
+	*/
+	public type(input: string, { interval = 0 }: {
 		interval?: number
-	} = {
-		interval: 0
-	}): void {
-		ow(string, ow.string)
+	} = {}): void {
+		ow(input, ow.string)
 		ow(interval, ow.optional.number.greaterThanOrEqual(0))
 
 		if (is.number(interval)) {
-			interval = string.length * interval / 60
+			interval = input.length * interval / 60
 		}
 
 		if (interval > 0) {
-			robot.typeStringDelayed(string, interval)
+			robot.typeStringDelayed(input, interval)
 		} else {
-			robot.typeString(string)
+			robot.typeString(input)
 		}
 	}
 }
 
 class Screen {
-	public pixelAt(x: number, y: number): string {
-		ow(x, ow.number)
-		ow(y, ow.number)
-
-		return robot.getPixelColor(x, y)
-	}
 
 	public get width(): number {
 		return robot.getScreenSize().width
@@ -247,12 +310,34 @@ class Screen {
 		return robot.getScreenSize().height
 	}
 
+	/**
+	Get the hex code for the pixel colour at a specific coordinate.
+
+	@param x The x coordinate of the pixel location.
+	@param y The y coordinate of the pixel location.
+	*/
+	public pixelAt(x: number, y: number): string {
+		ow(x, ow.number)
+		ow(y, ow.number)
+
+		return robot.getPixelColor(x, y)
+	}
+
+	/**
+	Take a screenshot of the current screen.
+
+	@param x The coordinates on the screen for the top-left corner of the screenshot.
+	@param y The height of the screenshot.
+	@param width The width of the screenshot.
+	@param height The height of the screenshot.
+	*/
 	public capture(x = 0, y = 0, width: number = this.width, height: number = this.height): robot.Bitmap {
 		ow(x, ow.number)
 		ow(y, ow.number)
 		ow(width, ow.number)
 		ow(height, ow.number)
 
+		// TODO: Revamp bitmap API in next major version.
 		return robot.screen.capture(x, y, width, height)
 	}
 }
