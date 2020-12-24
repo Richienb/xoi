@@ -301,7 +301,6 @@ class Keyboard extends Emittery.Typed<{
 }
 
 class Screen {
-
 	public get width(): number {
 		return robot.getScreenSize().width
 	}
